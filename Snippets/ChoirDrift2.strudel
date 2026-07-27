@@ -1,0 +1,33 @@
+// Choir Drift v2
+//
+// Added a very slow low oboe layer.
+// Oboe is more audible than sine because it has richer harmonics.
+// LPF at 300 removes much of the obvious reed brightness,
+// leaving a dark, woody bass presence.
+//
+// The repeated D4 at the end of the choir sequence creates
+// a small feeling of settling or pause.
+
+// Bb1 adds a dark, slightly dissonant colour.
+// Especially tense against E4 because of the tritone.
+// Works well as an occasional low-register shift rather than a constant root.
+
+$: stack(
+note("<c4 e4 g4 d4 c4 e4 d4 d4>")
+    .sound("gm_choir_aahs")
+    .attack("<2 6>".slow(16))
+    .release(10.3)
+    .lpf("<800 2000>".slow(32))
+    .detune("<-5 5>".slow(48))
+    .room(0.9)
+    .size(0.98)
+    .gain(0.3),
+
+note("<c2 c2 g1 bb1>".slow(4))
+  .sound("gm_oboe")
+  .attack(1)
+  .release(5)
+  .lpf(300)
+  .room(0.7)
+  .gain(0.5)
+)

@@ -1,0 +1,47 @@
+setGainCurve(x=> Math.pow(x, 2))
+
+samples('github:switchangel/breaks')
+samples('github:switchangel/pad')
+samples('github:tidalcycles/uzu-drumkit')
+
+setCps(170/60/4)
+
+
+// clean break
+// generate random sixteenth-slice positions
+// slow the randomness onto an 8-step rhythm
+// capture and loop one portion of that randomness
+// occasionally ratchet a hit
+
+$: s("breaks/2").fit()
+   .scrub(irand(16).div(16).seg(8)
+   .rib(50,4)
+         )
+   .n(irand(1).rib(20,1))
+   .almostNever(ply("2 | 4 "))
+   .orbit(2).distort("2:.5")
+   .gain(0.8)
+
+$: s("white!8").decay(.08).gain(.4)
+   .almostNever(ply("2 | 4 "))
+
+const chops = [
+  ".0@5 0@3".add(.3).color("teal"),
+  ".16 .3 .11 .5@5".color("yellow"),
+  rand.seg(8).rib(36, .5)
+]
+
+$: s("swpad").scrub(pick(chops, "<0>")).att(.3)
+  .n(4)
+  .gain(.8)
+  .note("<c2@3 c3>")
+  .phaser(.4).hpf(400)
+  .room(1).roomsize(4)
+._punchcard()
+
+$: note("<c2 g#1 f1@2>/2")
+  .struct("1@5 1@3").lpenv(4).lpa(2)
+  .s("supersaw")
+  .lpf(300).distort("2:.5")
+
+all(x => x.lpf(slider(82.7,0,100).pow(2)))

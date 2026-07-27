@@ -1,0 +1,73 @@
+// ------------------------------------------------------------
+// Ambient texture experiment
+// ------------------------------------------------------------
+
+// Global tempo
+setcps(0.35)
+
+// ------------------------------------------------------------
+// Performance controls
+// ------------------------------------------------------------
+
+const pad1Gain = slider(0.36, 0.00, 1, 0.01)
+const pad2Gain = slider(0.19, 0.00, 0.30, 0.01)
+const bassGain = slider(0.19, 0.00, 0.60, 0.01)
+const pulseGain = slider(0.21, 0.00, 0.50, 0.01)
+
+const pad1Release = slider(8.6, 1.0, 16.0, 0.1)
+
+const pad1Brightness = slider(1510, 300, 2200, 10)
+const pulseBrightness = slider(380, 100, 800, 10)
+
+const pulseEnvelope = arrange(
+  [24, "<0>"],
+  [999999, "<0.3 0.7 0.25 0 0 0.25 0.5 0.7 1 1 1>".slow(24)]
+)
+
+// ------------------------------------------------------------
+// Composition
+// ------------------------------------------------------------
+
+$: stack(
+
+  // Pad 1
+  note("<c4 d4 g4 d4 c4 e4 d4 <d4 bb3>>".slow(4))
+    .sound("gm_percussion_organ")
+    .attack("<2 6>".slow(16))
+    .release(pad1Release)
+    .lpf("<0.7 1.3>".slow(32).mul(pad1Brightness))
+    .room(0.95)
+    .gain(pad1Gain),
+
+  // Pad 2
+  note("<c4 e4 d4 d4 c4 e4 d4 <d4 bb3 g3>>".slow(2))
+    .degradeBy(0.07)
+    .sound("gm_voice_oohs")
+    .attack(4)
+    .release(8)
+    .lpf("<700 1600>".slow(40))
+    .detune("<-7 5>".slow(56))
+    .room(0.90)
+    .gain(pad2Gain),
+
+  // Bass layer
+  note("<c2 g1 bb1 <c2 bb2>>".slow(8))
+    .sound("gm_oboe")
+    .attack(1)
+    .release(5)
+    .lpf(300)
+    .detune("<-2 2>".slow(80))
+    .room(0.70)
+    .gain(bassGain),
+
+  // Buried pulse
+  sound("bd*4")
+    .bank("RolandTR909")
+    .speed("<0.82 0.9 1>".slow(16))
+    .lpf("<0.8 1.2>".slow(24).mul(pulseBrightness))
+    .room(0.90)
+    .size(0.95)
+    .gain(pulseEnvelope.mul(pulseGain))
+
+)
+._punchcard()

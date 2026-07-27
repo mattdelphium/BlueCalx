@@ -1,0 +1,127 @@
+// ------------------------------------------------------------
+// Experiment 002 — Emotional acid
+// ------------------------------------------------------------
+
+setcps(0.48)
+
+// ------------------------------------------------------------
+// Performance controls
+// ------------------------------------------------------------
+
+const acidGain = slider(0.26, 0.00, 0.70, 0.01)
+
+const kickGain = slider(0.37, 0.00, 0.50, 0.01)
+const clapGain = slider(0.18, 0.00, 0.40, 0.01)
+const hatGain = slider(0.06, 0.00, 0.35, 0.01)
+
+// Main low-pass cutoff.
+// Low = dark and submerged.
+// High = bright and open.
+const cutoff = slider(100, 100, 3000, 10)
+
+// Resonance emphasises the cutoff frequency.
+// This is the main squelch control.
+const resonance = slider(6, 0, 40, 1)
+
+// Controls how far the filter opens on each note.
+const filterEnvelope = slider(3.5, 0, 10, 0.1)
+
+// Controls how quickly the filter closes after each attack.
+// Lower = short, plucky bubbles.
+// Higher = longer, more vocal sweeps.
+const filterDecay = slider(0.16, 0.03, 0.80, 0.01)
+
+// Adds harmonics and grit after filtering.
+const distortion = slider(1.2, 0, 8, 0.1)
+
+// ------------------------------------------------------------
+// Composition
+// ------------------------------------------------------------
+
+$: stack(
+
+  // ----------------------------------------------------------
+  // Acid bass
+  // ----------------------------------------------------------
+
+  note("[c2 ~ c2 eb2] [g1 ~ bb1 c2]")
+    .sound("sawtooth")
+
+    // Volume envelope
+    .attack(0.01)
+    .decay(0.18)
+    .sustain(0.15)
+    .release(0.12)
+
+    // Base position of the low-pass filter
+    .lpf(cutoff)
+
+    // Emphasis around the cutoff frequency
+    .lpq(resonance)
+
+    // Filter opens almost immediately
+    .lpa(0.01)
+
+    // Filter closes after each note
+    .lpd(filterDecay)
+
+    // Filter does not remain fully open
+    .lps(0)
+
+    // Depth of the per-note filter movement
+    .lpenv(filterEnvelope)
+
+    // Steep analogue-style filter response
+    .ftype("ladder")
+
+    .distort(distortion)
+
+    // A small echo trail
+    .delay(0.18)
+    .delaytime(0.25)
+    .delayfeedback(0.35)
+
+    .gain(acidGain),
+
+  // ----------------------------------------------------------
+  // Four-on-the-floor kick
+  // ----------------------------------------------------------
+
+  sound("bd*4")
+    .bank("RolandTR909")
+    .lpf(1300)
+    .gain(kickGain),
+
+  // ----------------------------------------------------------
+  // Clap on beats 2 and 4
+  // ----------------------------------------------------------
+
+  sound("~ cp ~ cp")
+    .bank("RolandTR909")
+    .room(0.25)
+    .gain(clapGain),
+
+  // ----------------------------------------------------------
+  // Closed hats
+  //
+  // Eight evenly spaced hats, but with alternating volume.
+  // This gives them motion without making the rhythm busy.
+  // ----------------------------------------------------------
+
+  sound("hh*8")
+    .bank("RolandTR909")
+    .gain("<0.35 1>*4")
+    .gain(hatGain),
+
+  // ----------------------------------------------------------
+  // Occasional open hat
+  //
+  // One open hat near the end of each cycle.
+  // ----------------------------------------------------------
+
+  sound("~ ~ ~ ~ ~ ~ ~ ~")
+    .bank("RolandTR909")
+    .gain(hatGain * 0.75)
+
+)
+._punchcard()

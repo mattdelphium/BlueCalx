@@ -1,0 +1,182 @@
+
+setcpm(130/4)
+// Sets tempo in cycles per minute.
+// Dividing 130 by 4 makes one cycle behave roughly like one 4-beat bar.
+
+samples('github:mot4i/garden')
+// Loads the "garden" sample pack.
+
+samples('github:todepond/spicule')
+// Loads TodePond's "spicule" sample pack.
+
+samples('github:yaxu/clean-breaks')
+// Loads the "clean-breaks" sample pack.
+
+$: s("riffin/2").fit()
+// Plays the sample "riffin" once every two cycles.
+// .fit() changes playback speed so the sample fits the event duration.
+
+  .chop(16)
+// Splits the sample into 16 slices and plays through them.
+
+  .crush(5)
+// Reduces bit depth, creating digital crunch.
+
+  .clip(1)
+// Controls event length.
+// 1 means the event uses its full allocated duration.
+
+  .coarse(4)
+// Reduces effective sample-rate resolution.
+// Higher values create a rougher, degraded sound.
+
+  // .duck(1).orbit(2).duckattack(.3)
+  // Optional ducking setup.
+  // orbit(2) places this sound on orbit 2.
+  // duck(1) targets orbit 1 for volume reduction.
+  // duckattack(.3) controls the ducking envelope timing.
+
+.gain(0)
+// Sets the overall level of this layer.
+
+$: sound("bd:8(4,8)")
+// Plays kick sample 8.
+// (4,8) creates a Euclidean rhythm with 4 hits across 8 steps.
+
+  // sound("bd:8(3,8)")
+  // Alternative Euclidean rhythm with 3 hits across 8 steps.
+
+.lpf(slider(2700, 0, 5000, 100 ))
+// Low-pass filter controlled by a slider.
+// Starts at 800 Hz.
+// Range: 0 to 5000 Hz.
+// Step size: 100 Hz.
+
+  // .hpf(1000)
+  // Optional high-pass filter at 1000 Hz.
+
+.bank("garden")
+// Uses samples from the "garden" bank.
+
+  // .duck(1).orbit(2).duckattack(.3)
+  // Optional ducking setup.
+
+  // .jux(rev)
+  // Applies reverse to one stereo side while leaving the other side unchanged.
+  // This creates width and stereo movement.
+
+.gain(.5)
+// Sets the kick level.
+
+// $: sound("- oh")
+// Optional open-hat pattern.
+// "-" is a rest, followed by an open hi-hat.
+
+// .fast(4)
+// Speeds the pattern up four times.
+
+// .lpf(slider(600, 0, 5000, 100 ))
+// Low-pass filter controlled by a slider.
+
+// $: s("airhorn")
+// Optional airhorn sample.
+
+// .chop(8)
+// Splits the sample into 8 slices.
+
+// .clip(.5)
+// Cuts each event to half its available duration.
+
+// .speed(.5)
+// Plays the sample at half speed.
+// This also lowers its pitch.
+
+// .room(.5)
+// Adds reverb.
+
+// .sometimes(ply(2))
+// Sometimes repeats each event twice within the same rhythmic space.
+
+$: note("g1 d2 -")
+// Plays G1, then D2, then a rest.
+
+  .steps(8)
+// Reinterprets the pattern over an 8-step grid.
+
+.clip(1.5)
+// Lets notes sound longer than their allocated event duration.
+// Values above 1 can cause overlap.
+
+.fm(1)
+// Sets frequency-modulation amount.
+// Adds harmonics and changes the timbre.
+
+.fmh(2.01)
+// Sets the FM harmonicity ratio.
+// 2.01 is slightly offset from a clean ratio, creating mild beating.
+
+.room(0.8)
+// Adds a large amount of reverb.
+
+.size(4)
+// Controls reverb-space size.
+
+  .lpf(300)
+// Low-pass filter at 300 Hz.
+
+  .lpq(20)
+// Sets low-pass resonance.
+// Higher values emphasise frequencies near the cutoff.
+
+  .s("saw")
+// Uses a sawtooth-wave synth.
+
+.transpose("14,7")
+// Creates two simultaneous transposed copies.
+// +14 semitones and +7 semitones.
+
+.gain(0.3)
+// Sets this layer's volume.
+
+$: chord("<Dm [Am7]>")
+// Alternates between D minor and Am7.
+// Square brackets create a grouped/subdivided pattern event.
+
+  .offset("<0 [0 1]>")
+// Changes voicing offsets.
+// Dm uses offset 0.
+// Am7 moves between offsets 0 and 1.
+
+.voicing()
+// Converts chord names into actual playable notes.
+
+.s("saw")
+// Uses a sawtooth-wave synth.
+
+.seg(16)
+// Samples or retriggers the chord pattern 16 times per cycle.
+
+.dec(.14)
+// Sets a short decay time.
+
+.room(.5)
+// Adds reverb.
+
+.ph(.3)
+// Adds phaser modulation.
+
+.gain(0.5)
+// Sets chord-layer volume.
+
+._punchcard()
+// Displays the punchcard visualisation.
+
+all(x=>x
+// Applies the following transformation to every active pattern.
+// x represents each pattern.
+
+  .lpf(slider(3400, 0, 8000, 100))
+// Global low-pass filter slider.
+
+  .hpf(slider(0, 0, 3000, 10)))
+// Global high-pass filter slider.

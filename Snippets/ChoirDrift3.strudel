@@ -1,0 +1,47 @@
+// Slow 909 pulse works once enough upper body remains.
+// LPF below ~200 became too hidden on current speakers.
+// 300–400 keeps it audible without becoming a normal club kick.
+// Slower CPS makes the pulse feel embedded rather than busy.
+// Triangle to offset the brightness of the choir midi pad
+
+setcps(0.4)
+
+$: stack(
+  note("<c4 e4 g4 d4 c4 e4 d4 d4>")
+    .sound("gm_choir_aahs")
+    .attack("<4 6>".slow(16))
+    .release(10.3)
+    .detune("<-10 10>")
+    .lpf("<600 1300>".slow(32))
+    .room(0.95)
+    .gain(0.2),
+
+  note("<c3 g3 d3 g3>".slow(2))
+    .sound("triangle")
+    .attack(4)
+    .release(8)
+    .lpf("<700 1600>".slow(40))
+    .detune("<-7 5>".slow(56))
+    .room(0.9)
+    .gain(0.08),
+
+  note("<c2 g1 bb1 bb1>".slow(4))
+    .sound("gm_oboe")
+    .attack(1)
+    .release(5)
+    .lpf(300)
+    .room(0.7)
+    .gain(0.3),
+
+  sound("bd*4")
+    .bank("RolandTR909")
+    .speed("<0.82 0.9 1>".slow(16))
+    .lpf("<300 400>".slow(24))
+    .room(0.9)
+    .size(0.95)
+    .gain("<0.2 0.4>".slow(32))
+)
+._spiral({
+  steady: 0.98,
+  thickness: 5
+})

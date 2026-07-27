@@ -1,0 +1,49 @@
+// ------------------------------------------------------------
+// Choir Drift v1
+//
+// First ambient texture.
+//
+// Things to notice:
+//
+// - attack changes the fade-in time
+// - long attacks become quieter because notes overlap
+// - release controls cloud density
+// - LPF gives slow brightness movement
+// - detune creates the "wobble"
+// ------------------------------------------------------------
+
+setcps(0.5)
+
+$: note("<c4 e4 g4 d4 c4 e4 d4 d4>")
+  .sound("gm_choir_aahs")
+
+  // Fade in between 2 and 6 beats
+  .attack("<2 6 4 8>".slow(16))
+
+  // Interactive control
+  .release(slider(12.9,1,16,0.1))
+
+  // Slowly open/close the choir
+  .lpf("<800 2000>".slow(32))
+
+  // Gentle chorus effect
+  .detune("<-10 10>".slow(48))
+
+  // Large virtual room
+  .room(0.9)
+  .size(0.98)
+
+  // Prevent clipping
+  .gain(0.4)
+
+  // fun visualizer
+._spiral({
+  steady: 0.1,
+  thickness: 6
+})
+
+// Notes:
+//
+// Attack above about 5 creates a softer texture.
+// Detune is surprisingly effective even with only ±5 cents.
+// Choir becomes more pad-like than vocal.
